@@ -207,76 +207,64 @@ const init = () => {
           init();
         });
 
-    } else if (task === 'Add an Employee') {
-      db.getDepartments()
-        .then((departments) => {
-          console.log('Add an employee');
-          const departmentChoices = departments.map((department) => ({
-            name: department.name,
-            value: department.id,
-          }));
-          db.getRoles()
-            .then((roles) => {
-              const roleChoices = roles.map((role) => ({
-                name: role.title,
-                value: role.id,
-              }));
-              db.getEmployees()
-                .then((employees) => {
-                  const employeeChoices = employees.map((employee) => ({
-                    name: `${employee.first_name} ${employee.last_name}`,
-                    value: employee.id,
-                  }));
-                  prompt([
-                    {
-                      type: 'input',
-                      name: 'firstName',
-                      message: 'First name:',
-                    },
-                    {
-                      type: 'input',
-                      name: 'lastName',
-                      message: 'Last name:',
-                    },
-                    {
-                      type: 'list',
-                      name: 'roleId',
-                      message: 'Role of the employee:',
-                      choices: roleChoices,
-                    },
-                    {
-                      type: 'list',
-                      name: 'managerId',
-                      message: 'Select the manager for the employee:',
-                      choices: employeeChoices,
-                    },
-                  ])
-                    .then(({ firstName, lastName, departmentsId, rolesId, managerId, salary }) => {
-                      db.addEmployee(firstName, lastName, departmentsId, rolesId, managerId, salary)
-                        .then(() => {
-                          console.log('Employee successfully added!');
-                          init();
-                        })
-                        .catch((error) => {
-                          console.error('Error adding employee:', error);
-                          init();
-                        });
-                    });
-                })
-                .catch((error) => {
-                  console.error('Error fetching employees:', error);
-                  init();
-                });
-            })
-            .catch((error) => {
-              console.error('Error fetching roles:', error);
-              init();
-            });
-        })
-        .catch((error) => {
-          console.error('Error fetching departments:', error);
-          init();
-        });
+      } else if (task === 'Add an Employee') {
+        db.getRoles()
+          .then((roles) => {
+            const roleChoices = roles.map((role) => ({
+              name: role.title,
+              value: role.id,
+            }));
+            db.getEmployees()
+              .then((employees) => {
+                const employeeChoices = employees.map((employee) => ({
+                  name: `${employee.first_name} ${employee.last_name}`,
+                  value: employee.id,
+                }));
+                prompt([
+                  {
+                    type: 'input',
+                    name: 'firstName',
+                    message: 'First name:',
+                  },
+                  {
+                    type: 'input',
+                    name: 'lastName',
+                    message: 'Last name:',
+                  },
+                  {
+                    type: 'list',
+                    name: 'roleId',
+                    message: 'Role of the employee:',
+                    choices: roleChoices,
+                  },
+                  {
+                    type: 'list',
+                    name: 'managerId',
+                    message: 'Select the manager for the employee:',
+                    choices: employeeChoices,
+                  },
+                ])
+                  .then(({ firstName, lastName, roleId, managerId }) => {
+                    db.addEmployee(firstName, lastName, roleId, managerId)
+                      .then(() => {
+                        console.log('Employee successfully added!');
+                        init();
+                      })
+                      .catch((error) => {
+                        console.error('Error adding employee:', error);
+                        init();
+                      });
+                  });
+              })
+              .catch((error) => {
+                console.error('Error fetching employees:', error);
+                init();
+              });
+          })
+          .catch((error) => {
+            console.error('Error fetching roles:', error);
+            init();
+          });
 
     } else if (task === 'Remove an Employee') {
       db.getAllEmployees()
@@ -461,7 +449,7 @@ const init = () => {
         });
 
     } else {
-      console.log('Goodbye!');
+      console.log('SQL is challenging...but achievable! Keep it up!');
       process.exit();
     }
   });
