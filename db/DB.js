@@ -14,28 +14,33 @@ class DB {
           )
           .then(([data]) => console.table(data));
 
-     viewAllRoles() {
-          return this.db.promise()
-               .query(`
-               SELECT id, title
-               FROM roles;`
-               )
-               .then(([rows]) => rows)
-               .catch((error) => {
-                    throw error;
-               });
-     }
+          viewAllRoles() {
+               return this.db.promise()
+                 .query(`
+                   SELECT roles.id, roles.title, departments.name AS department, roles.salary
+                   FROM roles
+                   JOIN departments ON roles.departments_id = departments.id;
+                 `)
+                 .then(([rows]) => rows)
+                 .catch((error) => {
+                   throw error;
+                 });
+             }
+             
 
-     viewAllEmployees() {
-          return this.db.promise()
-               .query(`
-               SELECT id, first_name, last_name, departments_id, roles_id, salary
-               FROM employees`)
-               .then(([rows]) => rows)
-               .catch((error) => {
-                    throw error;
-               });
-     }
+             viewAllEmployees() {
+               return this.db.promise()
+                 .query(`
+                   SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary
+                   FROM employees
+                   JOIN roles ON employees.roles_id = roles.id
+                   JOIN departments ON roles.departments_id = departments.id;
+                 `)
+                 .then(([rows]) => rows)
+                 .catch((error) => {
+                   throw error;
+                 });
+             }
 
      addDepartment(departmentName) {
           return this.db.promise()
@@ -108,13 +113,13 @@ class DB {
                });
      }
 
-     addEmployee(firstName, lastName, departmentId, roleId, managerId, salary) {
+     addEmployee(firstName, lastName, roleId, managerId) {
           return this.db.promise()
                .query(`
             INSERT INTO employees
-            (first_name, last_name, departments_id, roles_id, manager_id, salary)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-                    [firstName, lastName, departmentId, roleId, managerId, salary])
+            (first_name, last_name, roles_id, manager_id)
+            VALUES (?, ?, ?, ?)`,
+                    [firstName, lastName, roleId, managerId])
                .then(([result]) => {
                     return result.affectedRows;
                });

@@ -41,40 +41,39 @@ const init = () => {
         });
 
       } else if (task === 'View all Roles') {
-        db.viewAllRoles()
-          .then((roles) => {
-            console.log('All Roles');
-            console.table(roles);
-            init();
-          })
-          .catch((error) => {
-            console.error('Error retrieving roles:', error);
-            init();
-          });
-
-        } else if (task === 'View All Employees') {
-          db.viewAllEmployees()
-            .then((employees) => {
-              if (employees.length > 0) {
-                const employeeData = employees.map((employee) => ({
-                  'First Name': employee.first_name,
-                  'Last Name': employee.last_name,
-                  'Department': employee.department_name,
-                  'Role': employee.role_title,
-                  'Manager': employee.manager_name,
-                  'Salary': employee.salary,
-                }));
-                console.log('All Employees:');
-                console.table(employeeData);
-              } else {
-                console.log('No employees found.');
-              }
+          db.viewAllRoles()
+            .then((roles) => {
+              console.log('All Roles');
+              console.table(roles);
               init();
             })
             .catch((error) => {
-              console.error('Error retrieving employees:', error);
+              console.error('Error retrieving roles:', error);
               init();
             });
+
+          } else if (task === 'View All Employees') {
+            db.viewAllEmployees()
+              .then((employees) => {
+                if (employees.length > 0) {
+                  const employeeData = employees.map((employee) => ({
+                    'First Name': employee.first_name,
+                    'Last Name': employee.last_name,
+                    'Department': employee.department,
+                    'Role': employee.title,
+                    'Salary': employee.salary,
+                  }));
+                  console.log('All Employees:');
+                  console.table(employeeData);
+                } else {
+                  console.log('No employees found.');
+                }
+                init();
+              })
+              .catch((error) => {
+                console.error('Error retrieving employees:', error);
+                init();
+              });
 
     } else if (task === 'Add a Department') {
       prompt([
@@ -171,7 +170,6 @@ const init = () => {
         });
 
     } else if (task === 'Remove a Role') {
-      // Fetch the list of roles from the database
       db.getRoles()
         .then((roles) => {
           const roleChoices = roles.map((role) => ({
@@ -224,8 +222,7 @@ const init = () => {
                   const employeeChoices = employees.map((employee) => ({
                     name: `${employee.first_name} ${employee.last_name}`,
                     value: employee.id,
-                  }));
-    
+                  }));    
                   prompt([
                     {
                       type: 'input',
@@ -239,12 +236,6 @@ const init = () => {
                     },
                     {
                       type: 'list',
-                      name: 'departmentId',
-                      message: 'Department in which employee will be:',
-                      choices: departmentChoices,
-                    },
-                    {
-                      type: 'list',
                       name: 'roleId',
                       message: 'Role of the employee:',
                       choices: roleChoices,
@@ -254,11 +245,6 @@ const init = () => {
                       name: 'managerId',
                       message: 'Select the manager for the employee:',
                       choices: employeeChoices,
-                    },
-                    {
-                      type: 'input',
-                      name: 'salary',
-                      message: 'Salary of the employee:',
                     },
                   ])
                     .then(({ firstName, lastName, departmentsId, rolesId, managerId, salary }) => {
