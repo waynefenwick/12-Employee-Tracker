@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/waynefenwick/12-Employee-Tracker/issues"
   },
-  "homepage": "https://github.com/waynefenwick/12-Employee-Tracker#readme"
+  "homepage": "https://github.com/waynefenwick/12-Employee-Tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "enquirer": "^2.3.6",
+    "mysql2": "^2.3.0"
+  }
 }
