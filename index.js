@@ -31,7 +31,7 @@ const init = () => {
     if (task === 'View all Departments') {
       db.viewAllDepts()
         .then((departments) => {
-          console.log('All Departments');
+          console.log('View all Departments');
           console.table(departments);
           init();
         })
@@ -40,40 +40,41 @@ const init = () => {
           init();
         });
 
-      } else if (task === 'View all Roles') {
-          db.viewAllRoles()
-            .then((roles) => {
-              console.log('All Roles');
-              console.table(roles);
-              init();
-            })
-            .catch((error) => {
-              console.error('Error retrieving roles:', error);
-              init();
-            });
+    } else if (task === 'View all Roles') {
+      db.viewAllRoles()
+        .then((roles) => {
+          console.log('View all Roles');
+          console.table(roles);
+          init();
+        })
+        .catch((error) => {
+          console.error('Error retrieving roles:', error);
+          init();
+        });
 
-          } else if (task === 'View All Employees') {
-            db.viewAllEmployees()
-              .then((employees) => {
-                if (employees.length > 0) {
-                  const employeeData = employees.map((employee) => ({
-                    'First Name': employee.first_name,
-                    'Last Name': employee.last_name,
-                    'Department': employee.department,
-                    'Role': employee.title,
-                    'Salary': employee.salary,
-                  }));
-                  console.log('All Employees:');
-                  console.table(employeeData);
-                } else {
-                  console.log('No employees found.');
-                }
-                init();
-              })
-              .catch((error) => {
-                console.error('Error retrieving employees:', error);
-                init();
-              });
+    } else if (task === 'View all Employees') {
+      db.viewAllEmployees()
+        .then((employees) => {
+        console.log('View all Employees');
+          if (employees.length > 0) {
+            const employeeData = employees.map((employee) => ({
+              'ID': employee.id,
+              'First Name': employee.first_name,
+              'Last Name': employee.last_name,
+              'Department': employee.department,
+              'Role': employee.title,
+              'Salary': employee.salary,
+            }));
+            console.table(employeeData);
+          } else {
+            console.log('No employees found.');
+          }
+          init();
+        })
+        .catch((error) => {
+          console.error('Error retrieving employees:', error);
+          init();
+        });
 
     } else if (task === 'Add a Department') {
       prompt([
@@ -84,6 +85,7 @@ const init = () => {
         },
       ])
         .then(({ departmentName }) => {
+          console.log('Add a department');
           db.addDepartment(departmentName)
             .then(() => {
               console.log('New department successfully added!');
@@ -98,6 +100,7 @@ const init = () => {
     } else if (task === 'Remove a Department') {
       db.remDepartments()
         .then((departments) => {
+          console.log('Remove a department');
           const departmentChoices = departments.map((department) => ({
             name: department.name,
             value: department.id,
@@ -130,6 +133,7 @@ const init = () => {
     } else if (task === 'Add a Role') {
       db.getDepartments()
         .then((departments) => {
+          console.log('Add a role');
           const departmentChoices = departments.map((department) => ({
             name: department.name,
             value: department.id,
@@ -172,11 +176,12 @@ const init = () => {
     } else if (task === 'Remove a Role') {
       db.getRoles()
         .then((roles) => {
+          console.log('Remove a role');
           const roleChoices = roles.map((role) => ({
             name: role.title,
             value: role.id,
           }));
-    
+
           prompt([
             {
               type: 'list',
@@ -200,29 +205,28 @@ const init = () => {
         .catch((error) => {
           console.error('Error fetching role:', error);
           init();
-        });    
+        });
 
     } else if (task === 'Add an Employee') {
       db.getDepartments()
         .then((departments) => {
+          console.log('Add an employee');
           const departmentChoices = departments.map((department) => ({
             name: department.name,
             value: department.id,
           }));
-    
           db.getRoles()
             .then((roles) => {
               const roleChoices = roles.map((role) => ({
                 name: role.title,
                 value: role.id,
               }));
-    
               db.getEmployees()
                 .then((employees) => {
                   const employeeChoices = employees.map((employee) => ({
                     name: `${employee.first_name} ${employee.last_name}`,
                     value: employee.id,
-                  }));    
+                  }));
                   prompt([
                     {
                       type: 'input',
@@ -273,38 +277,38 @@ const init = () => {
           console.error('Error fetching departments:', error);
           init();
         });
-    
-      } else if (task === 'Remove an Employee') {
-        db.getAllEmployees()
-          .then((employees) => {
-            const employeeChoices = employees.map((employee) => ({
-              name: `${employee.first_name} ${employee.last_name}`,
-              value: employee.id,
-            }));     
-            prompt([
-              {
-                type: 'list',
-                name: 'employeeId',
-                message: 'Select the employee you want to remove:',
-                choices: employeeChoices,
-              },
-            ])
-              .then(({ employeeId }) => {
-                db.remEmployee(employeeId)
-                  .then(() => {
-                    console.log('Employee successfully removed!');
-                    init();
-                  })
-                  .catch((error) => {
-                    console.error('Error removing employee:', error);
-                    init();
-                  });
-              });
-          })
-          .catch((error) => {
-            console.error('Error fetching employees:', error);
-            init();
-          });
+
+    } else if (task === 'Remove an Employee') {
+      db.getAllEmployees()
+        .then((employees) => {
+          const employeeChoices = employees.map((employee) => ({
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id,
+          }));
+          prompt([
+            {
+              type: 'list',
+              name: 'employeeId',
+              message: 'Select the employee you want to remove:',
+              choices: employeeChoices,
+            },
+          ])
+            .then(({ employeeId }) => {
+              db.remEmployee(employeeId)
+                .then(() => {
+                  console.log('Employee successfully removed!');
+                  init();
+                })
+                .catch((error) => {
+                  console.error('Error removing employee:', error);
+                  init();
+                });
+            });
+        })
+        .catch((error) => {
+          console.error('Error fetching employees:', error);
+          init();
+        });
 
     } else if (task === 'Update an Employee Role') {
       db.getAllEmployees()
@@ -312,13 +316,13 @@ const init = () => {
           const employeeChoices = employees.map((employee) => ({
             name: `${employee.first_name} ${employee.last_name}`,
             value: employee.id,
-          }));   
+          }));
           db.getAllRoles()
             .then((roles) => {
               const roleChoices = roles.map((role) => ({
                 name: role.title,
                 value: role.id,
-              }));  
+              }));
               prompt([
                 {
                   type: 'list',
@@ -354,14 +358,14 @@ const init = () => {
           console.error('Error fetching employees:', error);
           init();
         });
-    
+
     } else if (task === 'Update an Employee Manager') {
       db.getAllEmployees()
         .then((employees) => {
           const employeeChoices = employees.map((employee) => ({
             name: `${employee.first_name} ${employee.last_name}`,
             value: employee.id,
-          }));   
+          }));
           prompt([
             {
               type: 'list',
@@ -376,7 +380,7 @@ const init = () => {
                   const managerChoices = managers.map((manager) => ({
                     name: `${manager.first_name} ${manager.last_name}`,
                     value: manager.id,
-                  }));   
+                  }));
                   prompt([
                     {
                       type: 'list',
@@ -408,37 +412,37 @@ const init = () => {
           init();
         });
 
-      } else if (task === 'View Employees by Manager') {
-        db.getEmployeesByManager()
-            .then((employees) => {
-                if (employees.length > 0) {
-                    console.log('Employees and their managers:');
-                    console.table(employees);
-                } else {
-                    console.log('No employees found.');
-                }
-                init();
-            })
-            .catch((error) => {
-                console.error('Error retrieving employees:', error);
-                init();
-            });
+    } else if (task === 'View Employees by Manager') {
+      db.getEmployeesByManager()
+        .then((employees) => {
+          if (employees.length > 0) {
+            console.log('Employees and their managers:');
+            console.table(employees);
+          } else {
+            console.log('No employees found.');
+          }
+          init();
+        })
+        .catch((error) => {
+          console.error('Error retrieving employees:', error);
+          init();
+        });
 
-        } else if (task === 'View Employees by Department') {
-          db.getEmployeesByDepartment()
-              .then((employees) => {
-                  if (employees.length > 0) {
-                      console.log('Employees and their departments:');
-                      console.table(employees);
-                  } else {
-                      console.log('No employees found.');
-                  }
-                  init();
-              })
-              .catch((error) => {
-                  console.error('Error retrieving employees:', error);
-                  init();
-              });
+    } else if (task === 'View Employees by Department') {
+      db.getEmployeesByDepartment()
+        .then((employees) => {
+          if (employees.length > 0) {
+            console.log('Employees and their departments:');
+            console.table(employees);
+          } else {
+            console.log('No employees found.');
+          }
+          init();
+        })
+        .catch((error) => {
+          console.error('Error retrieving employees:', error);
+          init();
+        });
 
     } else if (task === 'Combined Department Salaries') {
       db.getCombinedDepartmentSalaries()

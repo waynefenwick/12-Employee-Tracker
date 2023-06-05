@@ -9,53 +9,62 @@ class DB {
 
      viewAllDepts = () =>
           this.db.promise()
-          .query(`
-          SELECT * FROM departments`,
-          )
-          .then(([data]) => console.table(data));
+               .query(`
+               SELECT * FROM departments`,
+               )
+               .then(([data]) =>
+               console.table(data));
 
-          viewAllRoles() {
-               return this.db.promise()
-                 .query(`
-                   SELECT roles.id, roles.title, departments.name AS department, roles.salary
-                   FROM roles
-                   JOIN departments ON roles.departments_id = departments.id;
-                 `)
-                 .then(([rows]) => rows)
-                 .catch((error) => {
-                   throw error;
-                 });
-             }
-             
+     viewAllRoles() {
+          return this.db.promise()
+               .query(`
+               SELECT roles.id, roles.title, departments.name
+               AS department, roles.salary FROM roles
+               JOIN departments ON roles.departments_id = departments.id;
+               `)
+               .then(([rows]) => {
+                    return rows;
+               })
+               .catch((error) => {
+                    throw error;
+               });
+     }
 
-             viewAllEmployees() {
-               return this.db.promise()
-                 .query(`
-                   SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary
-                   FROM employees
-                   JOIN roles ON employees.roles_id = roles.id
-                   JOIN departments ON roles.departments_id = departments.id;
-                 `)
-                 .then(([rows]) => rows)
-                 .catch((error) => {
-                   throw error;
-                 });
-             }
+     viewAllEmployees() {
+          return this.db.promise()
+               .query(`
+               SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary
+               FROM employees
+               JOIN roles ON employees.roles_id = roles.id
+               JOIN departments ON roles.departments_id = departments.id;
+               `)
+               .then(([rows]) => {
+                    return rows;
+               })
+               .catch((error) => {
+                    throw error;
+               });
+     }
 
      addDepartment(departmentName) {
           return this.db.promise()
                .query(`
                INSERT INTO departments (name)
                VALUES (?)`,
-                    [departmentName])
-               .then(([result]) => {
-                    return result.affectedRows;
+               [departmentName])
+               .then(([rows]) => {
+                    return rows;
+               })
+               .catch((error) => {
+                    throw error;
                });
      }
 
      remDepartments() {
           return this.db.promise()
-               .query('SELECT * FROM departments')
+               .query(`
+               SELECT * FROM departments
+               `)
                .then(([rows]) => {
                     return rows;
                })
@@ -66,9 +75,11 @@ class DB {
 
      delDepartment(departmentId) {
           return this.db.promise()
-               .query('DELETE FROM departments WHERE id = ?', [departmentId])
-               .then((result) => {
-                    return result[0].affectedRows > 0;
+               .query(`
+               DELETE FROM departments WHERE id = ?`,
+               [departmentId])
+               .then(([rows]) => {
+                    return rows;
                })
                .catch((error) => {
                     throw error;
@@ -78,18 +89,19 @@ class DB {
      addRole(title, departmentId, salary) {
           return this.getDepartments()
                .then((departments) => {
-                    const department = departments.find((department) => department.id === departmentId);
+                    const department = departments.find((department) =>
+                    department.id === departmentId);
                     if (department) {
                          return this.db
                               .promise()
                               .query(`
-                    INSERT INTO roles
-                    (title, departments_id, salary)
-                    VALUES (?, ?, ?)`,
-                                   [title, departmentId, salary]
+                              INSERT INTO roles
+                              (title, departments_id, salary)
+                              VALUES (?, ?, ?)`,
+                              [title, departmentId, salary]
                               )
                               .then(([result]) => {
-                                   return result.insertId; // Return the inserted role ID
+                                   return result.insertId;
                               });
                     } else {
                          throw new Error(`Department with ID ${departmentId} does not exist.`);
@@ -100,14 +112,15 @@ class DB {
                });
      }
 
-
      remRole(roleId) {
           return this.db.promise()
                .query(`
                DELETE FROM roles
                WHERE id = ?`,
-                    [roleId])
-               .then(([result]) => result.affectedRows)
+               [roleId])
+               .then(([rows]) => {
+                    return rows;
+               })
                .catch((error) => {
                     throw error;
                });
@@ -116,18 +129,23 @@ class DB {
      addEmployee(firstName, lastName, roleId, managerId) {
           return this.db.promise()
                .query(`
-            INSERT INTO employees
-            (first_name, last_name, roles_id, manager_id)
-            VALUES (?, ?, ?, ?)`,
-                    [firstName, lastName, roleId, managerId])
-               .then(([result]) => {
-                    return result.affectedRows;
+               INSERT INTO employees
+               (first_name, last_name, roles_id, manager_id)
+               VALUES (?, ?, ?, ?)`,
+               [firstName, lastName, roleId, managerId])
+               .then(([rows]) => {
+                    return rows;
+               })
+               .catch((error) => {
+                    throw error;
                });
      }
 
      getDepartments() {
           return this.db.promise()
-               .query('SELECT * FROM departments')
+               .query(`
+               SELECT * FROM departments
+               `)
                .then(([rows]) => {
                     return rows;
                })
@@ -138,7 +156,9 @@ class DB {
 
      getRoles() {
           return this.db.promise()
-               .query('SELECT * FROM roles')
+               .query(`
+               SELECT * FROM roles
+               `)
                .then(([rows]) => {
                     return rows;
                })
@@ -151,13 +171,14 @@ class DB {
      getEmployees() {
           return this.db.promise()
                .query(`
-            SELECT e.first_name, e.last_name, e.departments_id, e.roles_id, e.manager_id, e.salary,
-                   d.name AS department_name, r.title AS role_title,
-                   CONCAT(m.first_name, ' ', m.last_name) AS manager_name
-            FROM employees AS e
-            LEFT JOIN departments AS d ON e.departments_id = d.id
-            LEFT JOIN roles AS r ON e.roles_id = r.id
-            LEFT JOIN employees AS m ON e.manager_id = m.id`)
+               SELECT e.first_name, e.last_name, e.departments_id, e.roles_id, e.manager_id, e.salary,
+                    d.name AS department_name, r.title AS role_title,
+               CONCAT(m.first_name, ' ', m.last_name) AS manager_name
+               FROM employees AS e
+               LEFT JOIN departments AS d ON e.departments_id = d.id
+               LEFT JOIN roles AS r ON e.roles_id = r.id
+               LEFT JOIN employees AS m ON e.manager_id = m.id
+               `)
                .then(([rows]) => {
                     return rows;
                })
@@ -170,9 +191,11 @@ class DB {
      getAllEmployees() {
           return this.db.promise()
                .query(`
-               SELECT * FROM employees`
-               )
-               .then(([rows]) => rows)
+               SELECT * FROM employees
+               `)
+               .then(([rows]) => {
+                    return rows;
+               })
                .catch((error) => {
                     throw error;
                });
@@ -183,8 +206,10 @@ class DB {
                .query(`
                DELETE FROM employees
                WHERE id = ?`,
-                    [employeeId])
-               .then(([result]) => result.affectedRows)
+               [employeeId])
+               .then(([rows]) => {
+                    return rows;
+               })
                .catch((error) => {
                     throw error;
                });
@@ -193,12 +218,12 @@ class DB {
      updateEmployeeRole(employeeId, roleId) {
           return this.db.promise()
                .query(`
-              UPDATE employees
-              SET roles_id = ?
-              WHERE id = ?`,
-                    [roleId, employeeId])
-               .then(([result]) => {
-                    return result.affectedRows;
+               UPDATE employees
+               SET roles_id = ?
+               WHERE id = ?`,
+               [roleId, employeeId])
+               .then(([rows]) => {
+                    return rows;
                })
                .catch((error) => {
                     throw error;
@@ -208,7 +233,8 @@ class DB {
      getAllRoles() {
           return this.db.promise()
                .query(`
-            SELECT * FROM roles`)
+               SELECT * FROM roles
+               `)
                .then(([rows]) => {
                     return rows;
                })
@@ -220,28 +246,30 @@ class DB {
      updateEmployeeManager(employeeId, managerId) {
           return this.db.promise()
                .query(`
-              UPDATE employees
-              SET manager_id = ?
-              WHERE id = ?
-            `, [managerId, employeeId])
-               .then(([result]) => {
-                    return result.affectedRows;
+               UPDATE employees
+               SET manager_id = ?
+               WHERE id = ?`,
+               [managerId, employeeId])
+               .then(([rows]) => {
+                    return rows;
                })
                .catch((error) => {
                     throw error;
                });
      }
 
-
      getEmployeesByDepartment(departmentId) {
           return this.db.promise()
                .query(`
-               SELECT e.first_name, e.last_name, d.name AS department
-               FROM employees AS e
-               JOIN departments AS d ON e.departments_id = d.id
+               SELECT e.first_name, e.last_name, d.name
+               AS department FROM employees
+               AS e JOIN departments
+               AS d ON e.departments_id = d.id
                WHERE d.id = ?`,
-                    [departmentId])
-               .then(([rows]) => rows)
+               [departmentId])
+               .then(([rows]) => {
+                    return rows;
+               })
                .catch((error) => {
                     throw error;
                });
@@ -250,11 +278,12 @@ class DB {
      getManagers() {
           return this.db.promise()
                .query(`
-               SELECT DISTINCT id, first_name, last_name
-               FROM employees
-               WHERE manager_id
-               IS NULL;`)
-               .then(([rows]) => rows)
+               SELECT DISTINCT id, first_name, last_name FROM employees
+               WHERE manager_id IS NULL;
+               `)
+               .then(([rows]) => {
+                    return rows;
+               })
                .catch((error) => {
                     throw error;
                });
@@ -263,10 +292,15 @@ class DB {
      getEmployeesByManager() {
           return this.db.promise()
                .query(`
-              SELECT e.first_name, e.last_name, m.first_name AS manager_first_name, m.last_name AS manager_last_name
-              FROM employees AS e
-              LEFT JOIN employees AS m ON e.manager_id = m.id`)
-               .then(([rows]) => rows)
+               SELECT e.first_name, e.last_name, m.first_name
+               AS manager_first_name, m.last_name
+               AS manager_last_name FROM employees
+               AS e LEFT JOIN employees
+               AS m ON e.manager_id = m.id
+               `)
+               .then(([rows]) => {
+                    return rows;
+               })
                .catch((error) => {
                     throw error;
                });
@@ -276,10 +310,14 @@ class DB {
      getEmployeesByDepartment() {
           return this.db.promise()
                .query(`
-              SELECT e.first_name, e.last_name, d.name AS department_name
-              FROM employees AS e
-              INNER JOIN departments AS d ON e.departments_id = d.id`)
-               .then(([rows]) => rows)
+               SELECT e.first_name, e.last_name, d.name
+               AS department_name FROM employees
+               AS e INNER JOIN departments
+               AS d ON e.departments_id = d.id
+               `)
+               .then(([rows]) => {
+                    return rows;
+               })
                .catch((error) => {
                     throw error;
                });
@@ -289,12 +327,17 @@ class DB {
      getCombinedDepartmentSalaries() {
           return this.db.promise()
                .query(`
-               SELECT d.name AS department, SUM(r.salary) AS total_salary
-               FROM departments AS d
-               JOIN roles AS r ON d.id = r.departments_id
-               JOIN employees AS e ON r.id = e.roles_id
-               GROUP BY d.id`)
-               .then(([rows]) => rows)
+               SELECT d.name AS department, SUM(r.salary)
+               AS total_salary FROM departments
+               AS d JOIN roles
+               AS r ON d.id = r.departments_id
+               JOIN employees
+               AS e ON r.id = e.roles_id
+               GROUP BY d.id
+               `)
+               .then(([rows]) => {
+                    return rows;
+               })
                .catch((error) => {
                     throw error;
                });
