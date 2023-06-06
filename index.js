@@ -23,16 +23,16 @@ const init = () => {
         'View Employees by Manager',
         'View Employees by Department',
         'Combined Department Salaries',
+        'Combined Company Salaries',
         'Exit',
       ],
     },
   ]).then(({ task }) => {
 
     if (task === 'View all Departments') {
+      console.log('Current Departments');
       db.viewAllDepts()
         .then((departments) => {
-          console.log('View all Departments');
-          console.table(departments);
           init();
         })
         .catch((error) => {
@@ -41,9 +41,9 @@ const init = () => {
         });
 
     } else if (task === 'View all Roles') {
+      console.log('Current company roles');
       db.viewAllRoles()
         .then((roles) => {
-          console.log('View all Roles');
           console.table(roles);
           init();
         })
@@ -53,9 +53,9 @@ const init = () => {
         });
 
     } else if (task === 'View all Employees') {
+      console.log('Employees and their comany roles');
       db.viewAllEmployees()
         .then((employees) => {
-        console.log('View all Employees');
           if (employees.length > 0) {
             const employeeData = employees.map((employee) => ({
               'ID': employee.id,
@@ -77,6 +77,7 @@ const init = () => {
         });
 
     } else if (task === 'Add a Department') {
+      console.log('Adding a new department');
       prompt([
         {
           type: 'input',
@@ -98,6 +99,7 @@ const init = () => {
         });
 
     } else if (task === 'Remove a Department') {
+      console.log('Removing an old department');
       db.remDepartments()
         .then((departments) => {
           console.log('Remove a department');
@@ -131,6 +133,7 @@ const init = () => {
         });
 
     } else if (task === 'Add a Role') {
+      console.log('Adding a new role');
       db.getDepartments()
         .then((departments) => {
           console.log('Add a role');
@@ -174,6 +177,7 @@ const init = () => {
         });
 
     } else if (task === 'Remove a Role') {
+      console.log('Removing an inactive role');
       db.getRoles()
         .then((roles) => {
           console.log('Remove a role');
@@ -208,6 +212,7 @@ const init = () => {
         });
 
       } else if (task === 'Add an Employee') {
+        console.log('Adding a new employee');
         db.getRoles()
           .then((roles) => {
             const roleChoices = roles.map((role) => ({
@@ -267,6 +272,7 @@ const init = () => {
           });
 
     } else if (task === 'Remove an Employee') {
+      console.log('Removing an old employee');
       db.getAllEmployees()
         .then((employees) => {
           const employeeChoices = employees.map((employee) => ({
@@ -299,6 +305,7 @@ const init = () => {
         });
 
     } else if (task === 'Update an Employee Role') {
+      console.log('Updating the role of an employee');
       db.getAllEmployees()
         .then((employees) => {
           const employeeChoices = employees.map((employee) => ({
@@ -348,6 +355,7 @@ const init = () => {
         });
 
     } else if (task === 'Update an Employee Manager') {
+      console.log('Updating the manager of an employee');
       db.getAllEmployees()
         .then((employees) => {
           const employeeChoices = employees.map((employee) => ({
@@ -401,10 +409,10 @@ const init = () => {
         });
 
     } else if (task === 'View Employees by Manager') {
+      console.log('Employees and their managers:');
       db.getEmployeesByManager()
         .then((employees) => {
           if (employees.length > 0) {
-            console.log('Employees and their managers:');
             console.table(employees);
           } else {
             console.log('No employees found.');
@@ -417,10 +425,10 @@ const init = () => {
         });
 
     } else if (task === 'View Employees by Department') {
+      console.log('Employees and departments in which they work:');
       db.getEmployeesByDepartment()
         .then((employees) => {
           if (employees.length > 0) {
-            console.log('Employees and their departments:');
             console.table(employees);
           } else {
             console.log('No employees found.');
@@ -433,10 +441,10 @@ const init = () => {
         });
 
     } else if (task === 'Combined Department Salaries') {
+      console.log('Combined Department Salaries:');
       db.getCombinedDepartmentSalaries()
         .then((results) => {
           if (results.length > 0) {
-            console.log('Combined department salaries:');
             console.table(results);
           } else {
             console.log('No departments found.');
@@ -447,6 +455,21 @@ const init = () => {
           console.error('Error retrieving combined department salaries:', error);
           init();
         });
+
+      } else if (task === 'Combined Company Salaries') {
+        db.getCombinedCompanySalaries()
+          .then((results) => {
+            if (results.length > 0) {
+              console.table(results);
+            } else {
+              console.log('No salaries found.');
+            }
+            init();
+          })
+          .catch((error) => {
+            console.error('Error retrieving combined company salaries:', error);
+            init();
+          });
 
     } else {
       console.log('SQL is challenging...but achievable! Keep it up!');

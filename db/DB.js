@@ -306,7 +306,7 @@ class DB {
                });
      }
 
-
+// Employees and departments in which they work
      getEmployeesByDepartment() {
           return this.db.promise()
                .query(`
@@ -323,7 +323,7 @@ class DB {
                });
      }
 
-
+// Combined department salaries
      getCombinedDepartmentSalaries() {
           return this.db.promise()
                .query(`
@@ -341,6 +341,22 @@ class DB {
                .catch((error) => {
                     throw error;
                });
+     }
+
+     // Combined company salaries
+     getCombinedCompanySalaries() {
+          return this.db.promise()
+               .query(`
+               SELECT SUM(salary)
+               AS combined salary expenditure
+               FROM roles
+               `)
+               .then(([rows]) => {
+               return rows;
+               })
+          .catch((error) => {
+               throw error;
+          });
      }
 }
 
