@@ -1,6 +1,6 @@
 const { log } = require('util');
 const db = require('./connection');
-const consoleTable = require('console.table');
+const consoleTable = require('console.table'); // Enables table previews
 
 class DB {
      constructor(db) {
@@ -167,7 +167,6 @@ class DB {
                });
      }
 
-
      getEmployees() {
           return this.db.promise()
                .query(`
@@ -186,7 +185,6 @@ class DB {
                     throw error;
                });
      }
-
 
      getAllEmployees() {
           return this.db.promise()
@@ -306,7 +304,6 @@ class DB {
                });
      }
 
-// Employees and departments in which they work
      getEmployeesByDepartment() {
           return this.db.promise()
                .query(`
@@ -323,11 +320,11 @@ class DB {
                });
      }
 
-// Combined department salaries
      getCombinedDepartmentSalaries() {
           return this.db.promise()
                .query(`
-               SELECT d.name AS department, SUM(r.salary)
+               SELECT d.name AS department,
+               SUM(r.salary)
                AS total_salary FROM departments
                AS d JOIN roles
                AS r ON d.id = r.departments_id
@@ -343,12 +340,10 @@ class DB {
                });
      }
 
-     // Combined company salaries
      getCombinedCompanySalaries() {
           return this.db.promise()
                .query(`
                SELECT SUM(salary)
-               AS combined salary expenditure
                FROM roles
                `)
                .then(([rows]) => {

@@ -69,11 +69,10 @@ Once you have installed the necessary components, you can invoke this applicatio
 _A snapshot of the project build_
 &nbsp;
 
-## Media
 
 ![Media](./media/Assets/inquirer_snapshot.png)
 
-* Watch a [Full Media Video]() to see hwo this works.
+* Watch a [Full Media Video](https://drive.google.com/file/d/1EtNH5nPQ7EUeQWeatgtJMCXb2c-J4BZY/view?usp=sharing) to see how this works.
 
 &nbsp;
 

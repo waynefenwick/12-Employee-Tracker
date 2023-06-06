@@ -53,7 +53,7 @@ const init = () => {
         });
 
     } else if (task === 'View all Employees') {
-      console.log('Employees and their comany roles');
+      console.log('Employees and their company roles');
       db.viewAllEmployees()
         .then((employees) => {
           if (employees.length > 0) {
@@ -128,7 +128,7 @@ const init = () => {
             });
         })
         .catch((error) => {
-          console.error('Error fetching departments:', error);
+          console.error('Error fetching department:', error);
           init();
         });
 
@@ -145,18 +145,18 @@ const init = () => {
             {
               type: 'input',
               name: 'title',
-              message: 'What is the title of the role?:',
+              message: 'What is the title of the role?',
             },
             {
               type: 'list',
               name: 'departmentId',
-              message: 'In which department is the role?:',
+              message: 'In which department is the role?',
               choices: departmentChoices,
             },
             {
               type: 'input',
               name: 'salary',
-              message: 'What is the salary of the role?:',
+              message: 'What is the salary of the role?',
             },
           ])
             .then(({ title, departmentId, salary }) => {
@@ -166,13 +166,13 @@ const init = () => {
                   init();
                 })
                 .catch((error) => {
-                  console.error('Error adding role:', error);
+                  console.error('Error adding role.', error);
                   init();
                 });
             });
         })
         .catch((error) => {
-          console.error('Error fetching departments:', error);
+          console.error('Error fetching departments.', error);
           init();
         });
 
@@ -197,17 +197,17 @@ const init = () => {
             .then(({ roleId }) => {
               db.remRole(roleId)
                 .then(() => {
-                  console.log('Role successfully removed!');
+                  console.log('Role successfully removed');
                   init();
                 })
                 .catch((error) => {
-                  console.error('Error removing role:', error);
+                  console.error('Error removing role', error);
                   init();
                 });
             });
         })
         .catch((error) => {
-          console.error('Error fetching role:', error);
+          console.error('Error fetching role', error);
           init();
         });
 
@@ -252,22 +252,22 @@ const init = () => {
                   .then(({ firstName, lastName, roleId, managerId }) => {
                     db.addEmployee(firstName, lastName, roleId, managerId)
                       .then(() => {
-                        console.log('Employee successfully added!');
+                        console.log('Employee successfully added');
                         init();
                       })
                       .catch((error) => {
-                        console.error('Error adding employee:', error);
+                        console.error('Error adding employee', error);
                         init();
                       });
                   });
               })
               .catch((error) => {
-                console.error('Error fetching employees:', error);
+                console.error('Error fetching employees', error);
                 init();
               });
           })
           .catch((error) => {
-            console.error('Error fetching roles:', error);
+            console.error('Error fetching roles', error);
             init();
           });
 
@@ -283,7 +283,7 @@ const init = () => {
             {
               type: 'list',
               name: 'employeeId',
-              message: 'Select the employee you want to remove:',
+              message: 'Select the employee you want to remove',
               choices: employeeChoices,
             },
           ])
@@ -294,13 +294,13 @@ const init = () => {
                   init();
                 })
                 .catch((error) => {
-                  console.error('Error removing employee:', error);
+                  console.error('Error removing employee', error);
                   init();
                 });
             });
         })
         .catch((error) => {
-          console.error('Error fetching employees:', error);
+          console.error('Error fetching employee', error);
           init();
         });
 
@@ -335,7 +335,7 @@ const init = () => {
                 .then(({ employeeId, roleId }) => {
                   db.updateEmployeeRole(employeeId, roleId)
                     .then(() => {
-                      console.log('Employee role successfully updated!');
+                      console.log('Employee role successfully updated');
                       init();
                     })
                     .catch((error) => {
@@ -345,12 +345,12 @@ const init = () => {
                 });
             })
             .catch((error) => {
-              console.error('Error fetching roles:', error);
+              console.error('Error fetching role', error);
               init();
             });
         })
         .catch((error) => {
-          console.error('Error fetching employees:', error);
+          console.error('Error fetching employee', error);
           init();
         });
 
@@ -388,17 +388,17 @@ const init = () => {
                     .then(({ managerId }) => {
                       db.updateEmployeeManager(employeeId, managerId)
                         .then(() => {
-                          console.log('Employee manager successfully updated!');
+                          console.log('Employee manager successfully updated');
                           init();
                         })
                         .catch((error) => {
-                          console.error('Error updating employee manager:', error);
+                          console.error('Error updating employee manager', error);
                           init();
                         });
                     });
                 })
                 .catch((error) => {
-                  console.error('Error fetching managers:', error);
+                  console.error('Error fetching managers', error);
                   init();
                 });
             });
@@ -409,65 +409,66 @@ const init = () => {
         });
 
     } else if (task === 'View Employees by Manager') {
-      console.log('Employees and their managers:');
+      console.log('Employees and their managers');
       db.getEmployeesByManager()
         .then((employees) => {
           if (employees.length > 0) {
             console.table(employees);
           } else {
-            console.log('No employees found.');
+            console.log('No employees found');
           }
           init();
         })
         .catch((error) => {
-          console.error('Error retrieving employees:', error);
+          console.error('Error retrieving employees', error);
           init();
         });
 
     } else if (task === 'View Employees by Department') {
-      console.log('Employees and departments in which they work:');
+      console.log('Employees and departments in which they work');
       db.getEmployeesByDepartment()
         .then((employees) => {
           if (employees.length > 0) {
             console.table(employees);
           } else {
-            console.log('No employees found.');
+            console.log('No employees found');
           }
           init();
         })
         .catch((error) => {
-          console.error('Error retrieving employees:', error);
+          console.error('Error retrieving employees', error);
           init();
         });
 
     } else if (task === 'Combined Department Salaries') {
-      console.log('Combined Department Salaries:');
+      console.log('Combined Department Salaries');
       db.getCombinedDepartmentSalaries()
         .then((results) => {
           if (results.length > 0) {
             console.table(results);
           } else {
-            console.log('No departments found.');
+            console.log('No departments found');
           }
           init();
         })
         .catch((error) => {
-          console.error('Error retrieving combined department salaries:', error);
+          console.error('Error retrieving combined department salaries', error);
           init();
         });
 
       } else if (task === 'Combined Company Salaries') {
+              console.log('Combined Company Salaries');
         db.getCombinedCompanySalaries()
           .then((results) => {
             if (results.length > 0) {
               console.table(results);
             } else {
-              console.log('No salaries found.');
+              console.log('No salaries found');
             }
             init();
           })
           .catch((error) => {
-            console.error('Error retrieving combined company salaries:', error);
+            console.error('Error retrieving combined company salaries', error);
             init();
           });
 
