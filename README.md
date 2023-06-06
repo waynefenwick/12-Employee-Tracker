@@ -82,7 +82,7 @@ _A snapshot of the project build_
 
 ## Testing
 
-Test how this application works. It is open for further development with the goal being to create a user friendly environment that is quick and easy use in retrieving combinations of useful company data from a database of information.
+Test how this application works. It is open for further development with the goal being to create a user friendly environment that is quick and easy to use in retrieving combinations of useful company data from a database of information.
 
 &nbsp;
 
@@ -92,7 +92,8 @@ Test how this application works. It is open for further development with the goa
 
 ## Contribution
 
-* General internet research!
+* General internet research
+* Course modules and tutors
 
 &nbsp;
 
