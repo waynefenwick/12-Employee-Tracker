@@ -36,7 +36,8 @@ class DB {
                SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary
                FROM employees
                JOIN roles ON employees.roles_id = roles.id
-               JOIN departments ON roles.departments_id = departments.id;
+               JOIN departments ON roles.departments_id = departments.id
+               ORDER BY employees.id;
                `)
                .then(([rows]) => {
                     return rows;
@@ -290,11 +291,12 @@ class DB {
      getEmployeesByManager() {
           return this.db.promise()
                .query(`
-               SELECT e.first_name, e.last_name, m.first_name
+               SELECT e.id, e.first_name, e.last_name, m.first_name
                AS manager_first_name, m.last_name
                AS manager_last_name FROM employees
                AS e LEFT JOIN employees
                AS m ON e.manager_id = m.id
+               ORDER BY e.id;
                `)
                .then(([rows]) => {
                     return rows;
@@ -307,10 +309,11 @@ class DB {
      getEmployeesByDepartment() {
           return this.db.promise()
                .query(`
-               SELECT e.first_name, e.last_name, d.name
+               SELECT e.id, e.first_name, e.last_name, d.name
                AS department_name FROM employees
                AS e INNER JOIN departments
                AS d ON e.departments_id = d.id
+               ORDER BY e.id;
                `)
                .then(([rows]) => {
                     return rows;
@@ -323,7 +326,7 @@ class DB {
      getCombinedDepartmentSalaries() {
           return this.db.promise()
                .query(`
-               SELECT d.name AS department,
+               SELECT d.id, d.name AS department,
                SUM(r.salary)
                AS total_salary FROM departments
                AS d JOIN roles

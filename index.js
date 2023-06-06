@@ -22,8 +22,8 @@ const init = () => {
         'Update an Employee Manager',
         'View Employees by Manager',
         'View Employees by Department',
-        'Combined Department Salaries',
-        'Combined Company Salaries',
+        'View Combined Department Salaries',
+        'View Combined Company Salaries',
         'Exit',
       ],
     },
@@ -440,7 +440,7 @@ const init = () => {
           init();
         });
 
-    } else if (task === 'Combined Department Salaries') {
+    } else if (task === 'View Combined Department Salaries') {
       console.log('Combined Department Salaries');
       db.getCombinedDepartmentSalaries()
         .then((results) => {
@@ -456,7 +456,7 @@ const init = () => {
           init();
         });
 
-      } else if (task === 'Combined Company Salaries') {
+      } else if (task === 'View Combined Company Salaries') {
               console.log('Combined Company Salaries');
         db.getCombinedCompanySalaries()
           .then((results) => {
